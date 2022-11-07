@@ -1,0 +1,8 @@
+package network;
+
+public enum SV_NETWORK_TYPE
+{
+    NETWORK_TYPE_SERVER,
+    NETWORK_TYPE_CLIENT,
+    NETWORK_TYPE_INVALID
+}
