@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Arrays;
 
 //Class to launch dialog asking for field size
 public class SvFieldSizeDialog
@@ -13,20 +14,46 @@ public class SvFieldSizeDialog
     //Host field size info frame
     public static void SvGetFieldSize(SvGame game)
     {
-        JFrame infoDialog = new JFrame("Enter field size (Ex. 5 for 5x5).");
+        JFrame infoDialog = new JFrame("Game info");
         JButton connectButton = new JButton("Launch");
-        JTextField textField = new JTextField("Enter field size");
+        JTextField textField = new JTextField("Enter field size (Ex. 5 for 5x5)");
+        JTextField shipsField = new JTextField("Amount of ships & size (Ex. 5 5 4)");
+
+        shipsField.setForeground(Color.GRAY);
+        shipsField.setBounds(150, 80, 200, 30);
+        shipsField.addFocusListener(new FocusListener()
+        {
+            @Override
+            public void focusGained(FocusEvent e)
+            {
+                if (shipsField.getText().equals("Amount of ships & size (Ex. 5 5 4)"))
+                {
+                    shipsField.setText("");
+                    shipsField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e)
+            {
+                if(shipsField.getText().isEmpty())
+                {
+                    shipsField.setForeground(Color.GRAY);
+                    shipsField.setText("Amount of ships & size (Ex. 5 5 4)");
+                }
+            }
+        });
+
 
         textField.setForeground(Color.GRAY);
-        textField.setBounds(150, 70, 200, 30);
-        textField.setFocusable(false);
-        textField.setFocusable(true);
+        textField.setBounds(150, 50, 200, 30);
+
         textField.addFocusListener(new FocusListener()
         {
             @Override
             public void focusGained(FocusEvent e)
             {
-                if (textField.getText().equals("Enter field size"))
+                if (textField.getText().equals("Enter field size (Ex. 5 for 5x5)"))
                 {
                     textField.setText("");
                     textField.setForeground(Color.BLACK);
@@ -39,7 +66,7 @@ public class SvFieldSizeDialog
                 if(textField.getText().isEmpty())
                 {
                     textField.setForeground(Color.GRAY);
-                    textField.setText("Enter field size");
+                    textField.setText("Enter field size (Ex. 5 for 5x5)");
                 }
             }
         });
@@ -50,9 +77,37 @@ public class SvFieldSizeDialog
         {
             try
             {
+                String[] strArray = shipsField.getText().split(" ");
+                int totalUsed = 0, percentage;
+
+                game.ships = new int[strArray.length];
+
+                for(int i = 0; i < strArray.length; i++)
+                {
+                    game.ships[i] = Integer.parseInt(strArray[i]);
+                    totalUsed += game.ships[i];
+
+                    if(game.ships[i] > 5 || game.ships[i] < 2)
+                        throw new Exception();
+                }
+
+                Arrays.sort(game.ships);
+
+                for(int i = 0; i < game.ships.length / 2; i++)
+                {
+                    int temp = game.ships[i];
+                    game.ships[i] = game.ships[game.ships.length - i - 1];
+                    game.ships[game.ships.length - i - 1] = temp;
+                }
+
                 game.fieldSize = Integer.parseInt(textField.getText());
 
                 if(game.fieldSize < 5 || game.fieldSize > 30)
+                    throw new Exception();
+
+                percentage = (totalUsed * 100) / (game.fieldSize * game.fieldSize);
+
+                if(percentage > 40 || percentage < 10)
                     throw new Exception();
 
                 infoDialog.dispose();
@@ -71,6 +126,7 @@ public class SvFieldSizeDialog
 
         infoDialog.add(connectButton);
         infoDialog.add(textField);
+        infoDialog.add(shipsField);
 
         infoDialog.setLayout(null);
         infoDialog.setResizable(false);

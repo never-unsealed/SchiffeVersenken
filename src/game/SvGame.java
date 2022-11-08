@@ -1,10 +1,14 @@
 package game;
 
+import gui.SvGameStage;
+import gui.SvShipList;
 import network.SV_NETWORK_TYPE;
 import network.SvNetwork;
 import util.SV_GAME_MODE;
 
 import javax.swing.*;
+
+import java.util.Arrays;
 
 import static network.SV_NETWORK_TYPE.*;
 
@@ -15,6 +19,7 @@ public class SvGame
 
     public String hostname = null;
     public int fieldSize, port;
+    public int[] ships;
     public SV_GAME_MODE mode;
 
     public SvGame(JFrame frame)
@@ -25,7 +30,8 @@ public class SvGame
     //Load instance of game
     public void loadGame()
     {
-        JFrame gameFrame = new JFrame("Game in progress");
+        SvGameStage stage;
+        SvShipList list;
 
         SV_NETWORK_TYPE type = this.hostname == null
                 ?
@@ -49,6 +55,23 @@ public class SvGame
 
                 if(!network.outWord.contains("done"))
                     throw new Exception("Invalid word");
+
+                network.sendWord(
+                        "ships " + Arrays.toString(this.ships)
+                                        .replace("[", "")
+                                        .replace("]", "")
+                                        .replace(",", "")
+                );
+
+                System.out.println("ships " + Arrays.toString(this.ships)
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(",", ""));
+
+                network.receiveWord();
+
+                if(!network.outWord.contains("done"))
+                    throw new Exception("Invalid word");
             }
             else
             {
@@ -60,17 +83,109 @@ public class SvGame
                 this.fieldSize = Integer.parseInt(network.outWord.split(" ")[1]);
 
                 network.sendWord("done");
+
+                network.receiveWord();
+
+                System.out.println(network.outWord);
+
+                if(!network.outWord.contains("ships"))
+                    throw new Exception("Invalid word");
+
+                String[] shipsArr = network.outWord.split(" ");
+                this.ships = new int[shipsArr.length - 1];
+
+                for(int i = 0; i < shipsArr.length - 1; i++)
+                    this.ships[i] = Integer.parseInt(shipsArr[i + 1]);
+
+                network.sendWord("done");
             }
 
-            //Draw fields
+            //Draw main stage
 
-            gameFrame.setSize(50 * this.fieldSize, 50 * this.fieldSize);
+            stage = new SvGameStage(this.fieldSize);
 
-            //Let player chose ships
+            //Let player/bot chose ships
 
-            //Send ready/wait ready
+            if(type == NETWORK_TYPE_SERVER)
+            {
+                if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
+                {
+                    //Auto select
+                }
+                else
+                {
+                    list = new SvShipList(this.ships, stage);
+                }
+
+                stage.changeButtonDisabledState(false, false);
+
+                network.sendWord("ready");
+
+                network.receiveWord();
+
+                if(!network.outWord.contains("ready"))
+                    throw new Exception("Invalid word");
+            }
+            else
+            {
+                stage.changeButtonDisabledState(false, false);
+
+                network.receiveWord();
+
+                if(!network.outWord.contains("ready"))
+                    throw new Exception("Invalid word");
+
+                stage.changeButtonDisabledState(true, false);
+
+                if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
+                {
+                    //Auto select
+                }
+                else
+                {
+                    list = new SvShipList(this.ships, stage);
+                }
+
+                stage.changeButtonDisabledState(false, false);
+
+                network.sendWord("ready");
+            }
 
             //Enter while
+
+            while(true)
+            {
+                if(type == NETWORK_TYPE_SERVER)
+                {
+                    if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
+                    {
+                        //Auto chose
+                    }
+                    else
+                    {
+                        //let user chose
+                    }
+
+                    //Send word
+                    //Received word
+                }
+                else
+                {
+                    //Receive word
+                    //Get new word
+
+                    if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
+                    {
+                        //Auto chose
+                    }
+                    else
+                    {
+                        //let user chose
+                    }
+                }
+
+                break;
+            }
 
             network.closeNetwork();
             System.out.println("Done");

@@ -6,18 +6,14 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/SchiffeVersenken_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/game/SvGame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/SvFieldSizeDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/SvNetworkDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/SvMain.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/network/SV_NETWORK_TYPE.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/network/SvNetwork.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/util/SV_GAME_MODE.java" afterDir="false" />
+    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="Base">
+      <change afterPath="$PROJECT_DIR$/src/gui/SvGameStage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/SvShipList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/util/SvFieldButton.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/util/SvShipButton.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/game/SvGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/SvGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/SvFieldSizeDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/SvFieldSizeDialog.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,8 +23,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -46,16 +42,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -65,6 +61,14 @@
       <option name="presentableId" value="Default" />
       <updated>1667776839071</updated>
     </task>
+    <task id="LOCAL-00001" summary="Base">
+      <created>1667858561128</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1667858561128</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -77,5 +81,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Base" />
+    <option name="LAST_COMMIT_MESSAGE" value="Base" />
   </component>
 </project>
