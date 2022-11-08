@@ -4,7 +4,8 @@ import javax.swing.*;
 
 public class SvFieldButton extends JButton
 {
-    public String coordinate;
+    public int xcord;
+    public int ycord;
     public boolean containsShip;
 
     public SvFieldButton(String text)

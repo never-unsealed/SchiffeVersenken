@@ -9,6 +9,7 @@ import util.SV_GAME_MODE;
 import javax.swing.*;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 import static network.SV_NETWORK_TYPE.*;
 
@@ -100,11 +101,7 @@ public class SvGame
                 network.sendWord("done");
             }
 
-            //Draw main stage
-
-            stage = new SvGameStage(this.fieldSize);
-
-            //Let player/bot chose ships
+            stage = new SvGameStage(this.fieldSize, this.ships.length);
 
             if(type == NETWORK_TYPE_SERVER)
             {
@@ -115,11 +112,15 @@ public class SvGame
                 else
                 {
                     list = new SvShipList(this.ships, stage);
+
+                    //Wait
                 }
 
                 stage.changeButtonDisabledState(false, false);
 
                 network.sendWord("ready");
+
+                //Show nonblocking msg
 
                 network.receiveWord();
 
@@ -129,6 +130,8 @@ public class SvGame
             else
             {
                 stage.changeButtonDisabledState(false, false);
+
+                //Show nonblocking msg
 
                 network.receiveWord();
 
@@ -144,6 +147,8 @@ public class SvGame
                 else
                 {
                     list = new SvShipList(this.ships, stage);
+
+                    //Wait until finished
                 }
 
                 stage.changeButtonDisabledState(false, false);
@@ -164,6 +169,7 @@ public class SvGame
                     else
                     {
                         //let user chose
+                        //Wait for choice
                     }
 
                     //Send word
@@ -181,6 +187,7 @@ public class SvGame
                     else
                     {
                         //let user chose
+                        //Wait for choice
                     }
                 }
 

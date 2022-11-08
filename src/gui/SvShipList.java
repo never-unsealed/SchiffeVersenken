@@ -23,17 +23,35 @@ public class SvShipList
 
         for(int i = 0; i < shipsArr.length; i++)
         {
-            shipSelect[i] = new SvShipButton("Ship #" + i + " Size: " + shipsArr[i]);
+            shipSelect[i] = new SvShipButton(
+                    "Ship #" + i +
+                            " Size: " + shipsArr[i] +
+                            " Vertical: " + stage.latestSelectModeIsVertical);
+
             shipSelect[i].size = shipsArr[i];
+            shipSelect[i].index = i;
             shipSelect[i].setMinimumSize(new Dimension(250, 50));
             shipSelect[i].addActionListener(e ->
             {
                 SvShipButton currentButton = (SvShipButton)e.getSource();
 
+                if(currentButton == stage.lastSelect)
+                {
+                    currentButton.setText("Ship #" + currentButton.index +
+                            " Size: " + currentButton.size +
+                            " Vertical: " + !stage.latestSelectModeIsVertical);
+                }
+
+                if(currentButton.getText().contains("false"))
+                    stage.latestSelectModeIsVertical = false;
+                else
+                    stage.latestSelectModeIsVertical = true;
+
                 stage.lastSelect = currentButton;
 
                 for(int x = 0; x < shipSelect.length; x++)
-                    shipSelect[x].setEnabled(false);
+                    if(shipSelect[x].index != currentButton.index)
+                        shipSelect[x].setEnabled(false);
             });
 
             list.add(shipSelect[i]);

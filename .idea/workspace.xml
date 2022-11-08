@@ -6,14 +6,15 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="Base">
-      <change afterPath="$PROJECT_DIR$/src/gui/SvGameStage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/SvShipList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/util/SvFieldButton.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/util/SvShipButton.java" afterDir="false" />
+    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="Spielfeld + schiffe platzieren (unfertig)">
+      <change afterPath="$PROJECT_DIR$/src/util/SV_SHIP_COMPONENT_STATUS.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/util/SvShip.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game/SvGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/SvGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/SvFieldSizeDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/SvFieldSizeDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/SvGameStage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/SvGameStage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/SvShipList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/SvShipList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/util/SvFieldButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/SvFieldButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/util/SvShipButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/SvShipButton.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +24,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -68,7 +69,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667858561128</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Spielfeld + schiffe platzieren (unfertig)">
+      <created>1667928229056</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1667928229056</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -84,6 +92,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Base" />
-    <option name="LAST_COMMIT_MESSAGE" value="Base" />
+    <MESSAGE value="Spielfeld + schiffe platzieren (unfertig)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Spielfeld + schiffe platzieren (unfertig)" />
   </component>
 </project>
