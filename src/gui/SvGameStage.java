@@ -1,5 +1,7 @@
 package gui;
 
+import network.SV_NETWORK_TYPE;
+import network.SvNetwork;
 import util.SV_SHIP_COMPONENT_STATUS;
 import util.SvFieldButton;
 import util.SvShip;
@@ -7,11 +9,14 @@ import util.SvShipButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.CompletableFuture;
+import java.net.SocketException;
+
+import static util.SV_SHIP_COMPONENT_STATUS.*;
 
 //Class for managing game stage
 public class SvGameStage
 {
+    public SvNetwork network;
     private JFrame stageFrame;
     private SvFieldButton[] playerField;
     private SvFieldButton[] opponentField;
@@ -20,12 +25,12 @@ public class SvGameStage
     public boolean latestSelectModeIsVertical = false;
     public SvShipButton[] shipsBtn;
     public JFrame shipsFrame;
-    private int fieldSize;
-
+    public int fieldSize;
     public SvShip[] ships;
     private int shipsPlaced = 0;
+    private int opponentFields = 0;
 
-    public SvGameStage(int fieldSize, int amountShips)
+    public SvGameStage(int fieldSize, int amountShips, SvNetwork network)
     {
         JButton saveButton = new JButton("Save game.");
         JPanel gridPanel = new JPanel();
@@ -40,6 +45,7 @@ public class SvGameStage
 
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         this.fieldSize = fieldSize;
+        this.network = network;
 
         playerField = new SvFieldButton[fieldSize * fieldSize];
         opponentField = new SvFieldButton[fieldSize * fieldSize];
@@ -59,7 +65,12 @@ public class SvGameStage
             opponentField[i].setBackground(Color.DARK_GRAY);
             opponentField[i].addActionListener(e ->
             {
-                //Sink
+                SvFieldButton currentButton = (SvFieldButton)e.getSource();
+
+                this.stageCommandHandler(
+                        true,
+                        "shot " + currentButton.ycord + " " + currentButton.xcord
+                );
             });
 
             gridPanel.add(opponentField[i]);
@@ -79,8 +90,7 @@ public class SvGameStage
             playerField[i].addActionListener(e ->
             {
                 SvFieldButton currentButton = (SvFieldButton)e.getSource();
-
-                this.placeShip(((currentButton.ycord - 1) * fieldSize) + (currentButton.xcord - 1));
+                this.placeShip(coordinateToIndex(currentButton.ycord, currentButton.xcord));
             });
 
             gridPanel.add(playerField[i]);
@@ -117,7 +127,7 @@ public class SvGameStage
     }
 
     //Place ship on field
-    private void placeShip(int index)
+    public void placeShip(int index)
     {
         boolean allHidden = true;
 
@@ -128,13 +138,27 @@ public class SvGameStage
 
             if(this.latestSelectModeIsVertical)
             {
-                if(index + (this.lastSelect.size * this.fieldSize) > playerField.length)
+                if(index + ((this.lastSelect.size - 1) * this.fieldSize) > playerField.length)
                     throw new Exception("Ship too small to fit at that spot");
             }
             else
             {
-                if((index + this.lastSelect.size) % fieldSize < index % fieldSize)
+                if((index + (this.lastSelect.size - 1)) % fieldSize < index % fieldSize)
                     throw new Exception("Ship too small to fit at that spot");
+            }
+
+            for(int i = 0; i < this.lastSelect.size; i++)
+            {
+                if(this.latestSelectModeIsVertical)
+                {
+                    if(playerField[index + (i * this.fieldSize)].containsShip)
+                        throw new Exception("Collides with existing ship");
+                }
+                else
+                {
+                    if(playerField[index + i].containsShip)
+                        throw new Exception("Collides with existing ship");
+                }
             }
 
             for(int i = 0; i < this.lastSelect.size; i++)
@@ -171,6 +195,7 @@ public class SvGameStage
 
             this.shipsPlaced++;
             this.fieldsOccupied += this.lastSelect.size;
+            this.opponentFields += this.lastSelect.size;
 
             this.lastSelect.setVisible(false);
             this.lastSelect.used = true;
@@ -187,6 +212,23 @@ public class SvGameStage
             if(allHidden)
             {
                 this.shipsFrame.dispose();
+                this.changeButtonDisabledState(false, false);
+
+                this.network.sendWord("ready");
+
+                if(network.networkType == SV_NETWORK_TYPE.NETWORK_TYPE_SERVER)
+                {
+                    network.receiveWord();
+
+                    if(!network.outWord.contains("ready"))
+                        throw new Exception("Invalid word");
+
+                    this.changeButtonDisabledState(true, true);
+                }
+                else
+                {
+                    this.stageCommandHandler(false, null);
+                }
             }
         }
         catch(Exception e)
@@ -194,6 +236,155 @@ public class SvGameStage
             JOptionPane.showMessageDialog(
                     null,
                     "Error placing ship: " + e,
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+
+    private int coordinateToIndex(int y, int x)
+    {
+        return ((y - 1) * this.fieldSize) + (x- 1);
+    }
+
+    private boolean updateShipShot(int fieldIndex)
+    {
+        boolean retVal = false;
+
+        for(int i = 0; i < ships.length; i++)
+        {
+            for(int x = 0; x < 5; x++)
+            {
+                if(ships[i].coordinate[x] == fieldIndex)
+                    ships[i].componentStatus[x] = SHIP_COMPONENT_STATUS_DESTROYED;
+            }
+        }
+
+        for(int i = 0; i < ships.length; i++)
+        {
+            int cmp = 0;
+
+            for(int x = 0; x < 5; x++)
+            {
+                if(ships[i].componentStatus[x] == SHIP_COMPONENT_STATUS_VALID)
+                    cmp++;
+            }
+
+            if(cmp == 0)
+            {
+                ships[i].componentStatus[0] = SHIP_COMPONENT_STATUS_SUNK;
+                retVal = true;
+            }
+        }
+
+        return retVal;
+    }
+
+    private void stageCommandHandler(boolean sendWord, String word)
+    {
+        try
+        {
+            if(sendWord)
+            {
+                network.sendWord(word);
+                this.changeButtonDisabledState(false, true);
+            }
+
+            network.receiveWord();
+
+            System.out.println(network.outWord);
+
+            if(network.outWord.contains("save"))
+            {
+
+            }
+            else if(network.outWord.contains("shot"))
+            {
+                String answer;
+                int index = coordinateToIndex(
+                        Integer.parseInt(network.outWord.split(" ")[1]),
+                        Integer.parseInt(network.outWord.split(" ")[2])
+                );
+
+                if(this.playerField[index].containsShip)
+                {
+                    System.out.println(this.fieldsOccupied);
+
+                    if(this.fieldsOccupied-- == 1)
+                    {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "You lost the game",
+                                "Error",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+
+                        System.exit(-1);
+                    }
+
+                    this.playerField[index].setBackground(Color.RED);
+
+                    if(updateShipShot(index))
+                    {
+                        answer = "answer 2";
+                    }
+                    else
+                    {
+                        answer = "answer 1";
+                    }
+                }
+                else
+                {
+                    this.playerField[index].setBackground(Color.BLUE);
+                    answer = "answer 0";
+                }
+
+                stageCommandHandler(true, answer);
+            }
+            else if(network.outWord.contains("answer"))
+            {
+                int index = coordinateToIndex(
+                        Integer.parseInt(word.split(" ")[1]),
+                        Integer.parseInt(word.split(" ")[2])
+                );
+
+                if(network.outWord.contains("0"))
+                {
+                    this.opponentField[index].setBackground(Color.BLUE);
+                    stageCommandHandler(true, "pass");
+                }
+                else if(network.outWord.contains("1") || network.outWord.contains("2"))
+                {
+                    this.opponentFields--;
+                    this.opponentField[index].setBackground(Color.RED);
+                    this.changeButtonDisabledState(true, true);
+                }
+            }
+            else if(network.outWord.contains("pass"))
+            {
+                this.changeButtonDisabledState(true, true);
+            }
+            else
+            {
+                throw new Exception("Invalid word");
+            }
+        }
+        catch(SocketException e)
+        {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "The game ended:" + (this.opponentFields == 1 ? "You won" : "Opponent disconnected"),
+                    "End.",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            System.exit(1);
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Unexpected error: " + e,
                     "Error",
                     JOptionPane.INFORMATION_MESSAGE
             );

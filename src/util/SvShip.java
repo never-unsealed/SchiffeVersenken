@@ -2,8 +2,8 @@ package util;
 
 public class SvShip
 {
-    private SV_SHIP_COMPONENT_STATUS[] componentStatus;
-    private int coordinate[];
+    public SV_SHIP_COMPONENT_STATUS[] componentStatus;
+    public int coordinate[];
 
     public SvShip()
     {

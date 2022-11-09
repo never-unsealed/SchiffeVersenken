@@ -101,7 +101,7 @@ public class SvGame
                 network.sendWord("done");
             }
 
-            stage = new SvGameStage(this.fieldSize, this.ships.length);
+            stage = new SvGameStage(this.fieldSize, this.ships.length, network);
 
             if(type == NETWORK_TYPE_SERVER)
             {
@@ -112,20 +112,7 @@ public class SvGame
                 else
                 {
                     list = new SvShipList(this.ships, stage);
-
-                    //Wait
                 }
-
-                stage.changeButtonDisabledState(false, false);
-
-                network.sendWord("ready");
-
-                //Show nonblocking msg
-
-                network.receiveWord();
-
-                if(!network.outWord.contains("ready"))
-                    throw new Exception("Invalid word");
             }
             else
             {
@@ -147,54 +134,9 @@ public class SvGame
                 else
                 {
                     list = new SvShipList(this.ships, stage);
-
-                    //Wait until finished
                 }
-
-                stage.changeButtonDisabledState(false, false);
-
-                network.sendWord("ready");
             }
 
-            //Enter while
-
-            while(true)
-            {
-                if(type == NETWORK_TYPE_SERVER)
-                {
-                    if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
-                    {
-                        //Auto chose
-                    }
-                    else
-                    {
-                        //let user chose
-                        //Wait for choice
-                    }
-
-                    //Send word
-                    //Received word
-                }
-                else
-                {
-                    //Receive word
-                    //Get new word
-
-                    if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
-                    {
-                        //Auto chose
-                    }
-                    else
-                    {
-                        //let user chose
-                        //Wait for choice
-                    }
-                }
-
-                break;
-            }
-
-            network.closeNetwork();
             System.out.println("Done");
         }
         catch (Exception e)

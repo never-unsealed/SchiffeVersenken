@@ -13,15 +13,18 @@ public class SvNetwork
     private Socket socket = null;
     private DataInputStream inputStream = null;
     private DataOutputStream outputStream = null;
-    private SV_NETWORK_TYPE type = SV_NETWORK_TYPE.NETWORK_TYPE_INVALID;
     public String outWord = "";
+    public SV_NETWORK_TYPE networkType;
 
     public SvNetwork(SV_NETWORK_TYPE type, String hostname, int port) throws Exception
     {
+        this.networkType = type;
+
         switch (type)
         {
             case NETWORK_TYPE_SERVER:
 
+                System.out.println("Server");
                 this.serverSocket = new ServerSocket(port);
                 this.socket = this.serverSocket.accept();
 
@@ -45,7 +48,7 @@ public class SvNetwork
                 throw new RuntimeException("Invalid type.");
         }
 
-        this.type = type;
+        this.networkType = type;
 
         this.inputStream = new DataInputStream(
                 this.socket.getInputStream()
