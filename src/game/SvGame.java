@@ -1,5 +1,6 @@
 package game;
 
+import bot.SvBot;
 import gui.SvGameStage;
 import gui.SvShipList;
 import network.SV_NETWORK_TYPE;
@@ -33,6 +34,7 @@ public class SvGame
     {
         SvGameStage stage;
         SvShipList list;
+        SvBot bot;
 
         SV_NETWORK_TYPE type = this.hostname == null
                 ?
@@ -101,13 +103,16 @@ public class SvGame
                 network.sendWord("done");
             }
 
-            stage = new SvGameStage(this.fieldSize, this.ships.length, network);
+            stage = new SvGameStage(this.fieldSize, this.ships.length, network,this.mode);
+            bot = new SvBot(this.ships, stage);
+            stage.addBot(bot);
 
             if(type == NETWORK_TYPE_SERVER)
             {
                 if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
                 {
                     //Auto select
+                    list = new SvShipList(this.ships, stage);
                 }
                 else
                 {
@@ -130,6 +135,7 @@ public class SvGame
                 if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
                 {
                     //Auto select
+                    list = new SvShipList(this.ships, stage);
                 }
                 else
                 {

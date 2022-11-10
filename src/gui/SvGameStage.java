@@ -1,11 +1,9 @@
 package gui;
 
+import bot.SvBot;
 import network.SV_NETWORK_TYPE;
 import network.SvNetwork;
-import util.SV_SHIP_COMPONENT_STATUS;
-import util.SvFieldButton;
-import util.SvShip;
-import util.SvShipButton;
+import util.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +15,11 @@ import static util.SV_SHIP_COMPONENT_STATUS.*;
 public class SvGameStage
 {
     public SvNetwork network;
+    private SvBot bot;
+    private SV_GAME_MODE mode;
     private JFrame stageFrame;
     private SvFieldButton[] playerField;
-    private SvFieldButton[] opponentField;
+    public SvFieldButton[] opponentField;
     public int fieldsOccupied;
     public SvShipButton lastSelect = null;
     public boolean latestSelectModeIsVertical = false;
@@ -30,7 +30,7 @@ public class SvGameStage
     private int shipsPlaced = 0;
     private int opponentFields = 0;
 
-    public SvGameStage(int fieldSize, int amountShips, SvNetwork network)
+    public SvGameStage(int fieldSize, int amountShips, SvNetwork network, SV_GAME_MODE mode)
     {
         JButton saveButton = new JButton("Save game.");
         JPanel gridPanel = new JPanel();
@@ -46,6 +46,7 @@ public class SvGameStage
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         this.fieldSize = fieldSize;
         this.network = network;
+        this.mode = mode;
 
         playerField = new SvFieldButton[fieldSize * fieldSize];
         opponentField = new SvFieldButton[fieldSize * fieldSize];
@@ -110,6 +111,11 @@ public class SvGameStage
         this.changeButtonDisabledState(false, true);
     }
 
+    public void addBot(SvBot bot)
+    {
+        this.bot = bot;
+    }
+
     //Change field disable state
     public void changeButtonDisabledState(boolean isEnable, boolean isOpponent)
     {
@@ -122,7 +128,8 @@ public class SvGameStage
 
         for(int i = 0; i < field.length; i++)
         {
-            field[i].setEnabled(isEnable);
+            if(!field[i].revealed)
+                field[i].setEnabled(isEnable);
         }
     }
 
@@ -319,6 +326,7 @@ public class SvGameStage
                                 JOptionPane.INFORMATION_MESSAGE
                         );
 
+                        this.network.closeNetwork();
                         System.exit(-1);
                     }
 
@@ -348,6 +356,9 @@ public class SvGameStage
                         Integer.parseInt(word.split(" ")[2])
                 );
 
+                this.opponentField[index].revealed = true;
+                this.opponentField[index].setEnabled(false);
+
                 if(network.outWord.contains("0"))
                 {
                     this.opponentField[index].setBackground(Color.BLUE);
@@ -373,11 +384,12 @@ public class SvGameStage
         {
             JOptionPane.showMessageDialog(
                     null,
-                    "The game ended:" + (this.opponentFields == 1 ? "You won" : "Opponent disconnected"),
+                    "The game ended: " + (this.opponentFields == 1 ? "You won" : "Opponent disconnected"),
                     "End.",
                     JOptionPane.INFORMATION_MESSAGE
             );
 
+            this.network.closeNetwork();
             System.exit(1);
         }
         catch(Exception e)

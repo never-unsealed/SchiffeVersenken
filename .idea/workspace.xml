@@ -6,13 +6,13 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="schiffe platzieren">
-      <change afterPath="$PROJECT_DIR$/src/bot/SvBot.java" afterDir="false" />
+    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="Finish base game">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bot/SvBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/SvBot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game/SvGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/SvGame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/SvGameStage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/SvGameStage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/network/SvNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/network/SvNetwork.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/util/SvShip.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/SvShip.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/util/SvFieldButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/SvFieldButton.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +81,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667938712565</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Finish base game">
+      <created>1668012304847</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1668012304847</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -99,6 +106,7 @@
     <MESSAGE value="Base" />
     <MESSAGE value="Spielfeld + schiffe platzieren (unfertig)" />
     <MESSAGE value="schiffe platzieren" />
-    <option name="LAST_COMMIT_MESSAGE" value="schiffe platzieren" />
+    <MESSAGE value="Finish base game" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish base game" />
   </component>
 </project>

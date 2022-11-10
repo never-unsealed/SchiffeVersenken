@@ -2,12 +2,11 @@ package bot;
 
 import gui.SvGameStage;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class SvBot
 {
     private SvGameStage stage;
     private int[] shipsArr;
+    private int previousIndex = 0;
 
     public SvBot(int[] ships, SvGameStage stage)
     {
@@ -21,5 +20,11 @@ public class SvBot
         {
 
         }
+    }
+
+    //Automatically shoot at opponent field
+    public void shootFieldBot()
+    {
+        stage.opponentField[previousIndex++].doClick();
     }
 }
