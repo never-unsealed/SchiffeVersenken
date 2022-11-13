@@ -1,6 +1,7 @@
 package main;
 
 import game.SvGame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,7 +18,7 @@ public class SvMain
         JFrame mainFrame = new JFrame("Schiffe versenken b0.1");
         JPanel menuPanel = new JPanel();
         JButton modeOnline, modeOffline, modeAuto, restoreGame;
-        SvGame game = new SvGame(mainFrame);
+        SvGame game = new SvGame(mainFrame, false);
 
         modeOnline = new JButton("Gegen anderen Spieler spielen.");
         modeOffline = new JButton("Gegen Computer spielen.");

@@ -7,6 +7,7 @@ import util.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.EOFException;
 import java.net.SocketException;
 
 import static util.SV_SHIP_COMPONENT_STATUS.*;
@@ -30,7 +31,7 @@ public class SvGameStage
     private int shipsPlaced = 0;
     private int opponentFields = 0;
 
-    public SvGameStage(int fieldSize, int amountShips, SvNetwork network, SV_GAME_MODE mode)
+    public SvGameStage(int fieldSize, int amountShips, SvNetwork network, SV_GAME_MODE mode, boolean isVisible)
     {
         JButton saveButton = new JButton("Save game.");
         JPanel gridPanel = new JPanel();
@@ -106,7 +107,9 @@ public class SvGameStage
         stageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         stageFrame.setResizable(true);
         stageFrame.pack();
-        stageFrame.setVisible(true);
+
+        if(isVisible)
+            stageFrame.setVisible(true);
 
         this.changeButtonDisabledState(false, true);
     }
@@ -218,7 +221,9 @@ public class SvGameStage
 
             if(allHidden)
             {
-                this.shipsFrame.dispose();
+                if(this.shipsFrame != null)
+                    this.shipsFrame.dispose();
+
                 this.changeButtonDisabledState(false, false);
 
                 this.network.sendWord("ready");
@@ -231,6 +236,12 @@ public class SvGameStage
                         throw new Exception("Invalid word");
 
                     this.changeButtonDisabledState(true, true);
+
+                    if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
+                    {
+                        System.out.println("Vor clivck");
+                        this.bot.shootFieldBot();
+                    }
                 }
                 else
                 {
@@ -273,7 +284,8 @@ public class SvGameStage
 
             for(int x = 0; x < 5; x++)
             {
-                if(ships[i].componentStatus[x] == SHIP_COMPONENT_STATUS_VALID)
+                if(ships[i].componentStatus[x] == SHIP_COMPONENT_STATUS_VALID ||
+                        ships[i].componentStatus[x] == SHIP_COMPONENT_STATUS_SUNK)
                     cmp++;
             }
 
@@ -369,16 +381,35 @@ public class SvGameStage
                     this.opponentFields--;
                     this.opponentField[index].setBackground(Color.RED);
                     this.changeButtonDisabledState(true, true);
+
+                    if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
+                    {
+                        this.bot.shootFieldBot();
+                    }
                 }
             }
             else if(network.outWord.contains("pass"))
             {
                 this.changeButtonDisabledState(true, true);
+
+                if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
+                {
+                    this.bot.shootFieldBot();
+                }
             }
             else
             {
                 throw new Exception("Invalid word");
             }
+        }
+        catch(EOFException e)
+        {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "The game ended: You won",
+                    "End.",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         }
         catch(SocketException e)
         {

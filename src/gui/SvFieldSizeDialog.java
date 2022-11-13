@@ -1,6 +1,7 @@
 package gui;
 
 import game.SvGame;
+import util.SV_GAME_MODE;
 
 import javax.swing.*;
 import java.awt.*;
@@ -111,7 +112,31 @@ public class SvFieldSizeDialog
                     throw new Exception();
 
                 infoDialog.dispose();
-                game.loadGame();
+
+                if(game.mode == SV_GAME_MODE.GAME_MODE_OFFLINE)
+                {
+                    game.mode = SV_GAME_MODE.GAME_MODE_ONLINE;
+                    game.hostname = null;
+                    game.port = 4444;
+
+                    Thread t1 = new Thread(() ->
+                    {
+                        SvGame botGame = new SvGame(null, true);
+                        botGame.hostname = "localhost";
+                        botGame.port = 4444;
+                        botGame.mode = SV_GAME_MODE.GAME_MODE_AUTO;
+
+                        botGame.loadGame();
+                    });
+
+                    t1.start();
+
+                    game.loadGame();
+                }
+                else
+                {
+                    game.loadGame();
+                }
             }
             catch(Exception ex)
             {

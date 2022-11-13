@@ -6,13 +6,13 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="Finish base game">
+    <list default="true" id="4f979ccb-a28b-4992-aa73-80022026251c" name="Changes" comment="Start bot">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/SvBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/SvBot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game/SvGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/SvGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/SvFieldSizeDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/SvFieldSizeDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/SvGameStage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/SvGameStage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/network/SvNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/network/SvNetwork.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/util/SvFieldButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/SvFieldButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/SvMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/SvMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +46,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/nxcht/smoke/Coding/SchiffeVersenken/SchiffeVersenken&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
@@ -88,7 +89,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668012304847</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Start bot">
+      <created>1668107082027</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1668107082027</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -107,6 +115,7 @@
     <MESSAGE value="Spielfeld + schiffe platzieren (unfertig)" />
     <MESSAGE value="schiffe platzieren" />
     <MESSAGE value="Finish base game" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish base game" />
+    <MESSAGE value="Start bot" />
+    <option name="LAST_COMMIT_MESSAGE" value="Start bot" />
   </component>
 </project>

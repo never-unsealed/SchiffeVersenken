@@ -10,7 +10,6 @@ import util.SV_GAME_MODE;
 import javax.swing.*;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
 import static network.SV_NETWORK_TYPE.*;
 
@@ -18,22 +17,23 @@ import static network.SV_NETWORK_TYPE.*;
 public class SvGame
 {
     private JFrame mainFrame;
+    private boolean isHeadless;
 
     public String hostname = null;
     public int fieldSize, port;
     public int[] ships;
     public SV_GAME_MODE mode;
 
-    public SvGame(JFrame frame)
+    public SvGame(JFrame frame, boolean isHeadless)
     {
         this.mainFrame = frame;
+        this.isHeadless = isHeadless;
     }
 
     //Load instance of game
     public void loadGame()
     {
         SvGameStage stage;
-        SvShipList list;
         SvBot bot;
 
         SV_NETWORK_TYPE type = this.hostname == null
@@ -42,13 +42,15 @@ public class SvGame
                 :
                 NETWORK_TYPE_CLIENT;
 
-        mainFrame.setTitle("Connecting, please wait.");
+        if(mainFrame != null)
+            mainFrame.setTitle("Connecting, please wait.");
 
         try
         {
             SvNetwork network = new SvNetwork(type, this.hostname, this.port);
 
-            mainFrame.dispose();
+            if(mainFrame != null)
+                mainFrame.dispose();
 
             if(type == NETWORK_TYPE_SERVER)
             {
@@ -103,7 +105,7 @@ public class SvGame
                 network.sendWord("done");
             }
 
-            stage = new SvGameStage(this.fieldSize, this.ships.length, network,this.mode);
+            stage = new SvGameStage(this.fieldSize, this.ships.length, network, this.mode, !this.isHeadless);
             bot = new SvBot(this.ships, stage);
             stage.addBot(bot);
 
@@ -111,12 +113,11 @@ public class SvGame
             {
                 if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
                 {
-                    //Auto select
-                    list = new SvShipList(this.ships, stage);
+                    bot.placeShipsBot();
                 }
                 else
                 {
-                    list = new SvShipList(this.ships, stage);
+                    new SvShipList(this.ships, stage);
                 }
             }
             else
@@ -134,12 +135,11 @@ public class SvGame
 
                 if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
                 {
-                    //Auto select
-                    list = new SvShipList(this.ships, stage);
+                    bot.placeShipsBot();
                 }
                 else
                 {
-                    list = new SvShipList(this.ships, stage);
+                    new SvShipList(this.ships, stage);
                 }
             }
 
