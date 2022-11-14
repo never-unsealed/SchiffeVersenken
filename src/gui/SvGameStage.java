@@ -7,8 +7,14 @@ import util.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.net.SocketException;
+import java.util.Random;
 
 import static util.SV_SHIP_COMPONENT_STATUS.*;
 
@@ -17,6 +23,7 @@ public class SvGameStage
 {
     public SvNetwork network;
     private SvBot bot;
+    private JButton safeBtn;
     private SV_GAME_MODE mode;
     private JFrame stageFrame;
     private SvFieldButton[] playerField;
@@ -33,7 +40,7 @@ public class SvGameStage
 
     public SvGameStage(int fieldSize, int amountShips, SvNetwork network, SV_GAME_MODE mode, boolean isVisible)
     {
-        JButton saveButton = new JButton("Save game.");
+        safeBtn = new JButton("Save game.");
         JPanel gridPanel = new JPanel();
         JPanel footer = new JPanel();
         JPanel container = new JPanel();
@@ -69,10 +76,13 @@ public class SvGameStage
             {
                 SvFieldButton currentButton = (SvFieldButton)e.getSource();
 
-                this.stageCommandHandler(
-                        true,
-                        "shot " + currentButton.ycord + " " + currentButton.xcord
-                );
+                new Thread(() ->
+                {
+                    this.stageCommandHandler(
+                            true,
+                            "shot " + currentButton.ycord + " " + currentButton.xcord
+                    );
+                }).start();
             });
 
             gridPanel.add(opponentField[i]);
@@ -92,13 +102,23 @@ public class SvGameStage
             playerField[i].addActionListener(e ->
             {
                 SvFieldButton currentButton = (SvFieldButton)e.getSource();
-                this.placeShip(coordinateToIndex(currentButton.ycord, currentButton.xcord));
+
+                new Thread(() ->
+                {
+                    this.placeShip(coordinateToIndex(currentButton.ycord, currentButton.xcord));
+                }).start();
             });
 
             gridPanel.add(playerField[i]);
         }
 
-        footer.add(saveButton);
+        safeBtn.setEnabled(false);
+        safeBtn.addActionListener(e ->
+        {
+            safeCurrentStage(true, new Random().nextLong());
+        });
+
+        footer.add(safeBtn);
 
         container.add(gridPanel);
         container.add(footer);
@@ -134,6 +154,11 @@ public class SvGameStage
             if(!field[i].revealed)
                 field[i].setEnabled(isEnable);
         }
+
+        if(isEnable && isOpponent && mode != SV_GAME_MODE.GAME_MODE_AUTO)
+            safeBtn.setEnabled(true);
+        else
+            safeBtn.setEnabled(false);
     }
 
     //Place ship on field
@@ -238,10 +263,7 @@ public class SvGameStage
                     this.changeButtonDisabledState(true, true);
 
                     if(this.mode == SV_GAME_MODE.GAME_MODE_AUTO)
-                    {
-                        System.out.println("Vor clivck");
                         this.bot.shootFieldBot();
-                    }
                 }
                 else
                 {
@@ -315,7 +337,7 @@ public class SvGameStage
 
             if(network.outWord.contains("save"))
             {
-
+                safeCurrentStage(false, Long.parseLong(network.outWord.split(" ")[1]));
             }
             else if(network.outWord.contains("shot"))
             {
@@ -422,6 +444,66 @@ public class SvGameStage
 
             this.network.closeNetwork();
             System.exit(1);
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Unexpected error: " + e,
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+
+    public void safeCurrentStage(boolean issued, long id)
+    {
+        JFileChooser chooser = new JFileChooser();
+        FileWriter outFile;
+        PrintWriter writer;
+        File safeFile;
+        int userResult;
+
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        userResult = chooser.showSaveDialog(null);
+
+        if(userResult != JFileChooser.APPROVE_OPTION)
+            return;
+
+        safeFile = chooser.getSelectedFile();
+
+        try
+        {
+            if(safeFile.exists())
+                throw new Exception("File already exists");
+
+            if(!safeFile.createNewFile())
+                throw new Exception("Failed to create file");
+
+            outFile = new FileWriter(safeFile);
+            writer = new PrintWriter(outFile, true);
+
+            writer.println("data");
+
+            writer.close();
+            outFile.close();
+
+            if(issued)
+            {
+                this.network.sendWord("save " + id);
+
+                this.network.receiveWord();
+
+                if(!this.network.outWord.contains("ok"))
+                    throw new Exception("Unexpected response");
+
+                System.exit(1);
+            }
+            else
+            {
+                this.network.sendWord("ok");
+                System.exit(1);
+            }
         }
         catch(Exception e)
         {
